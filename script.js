@@ -3,6 +3,12 @@
     document.getElementById("nav-btn").classList.add("animate");
 });*/
 
+
+
+/* HEADER BUG WHERE WHEN YOU OPEN NAV MENU THE HEDARE STILL DISAPPEARS WHEN IT SHOULDNT*/
+/* REVAMP HOW HEADER WORKS ENTIRELY AS IT SHOULD STICK WHEN AT TOP*/
+
+
 /* CTA TEL SCROLL */
 const ctaTel = document.getElementById('cta-tel');
 const ctaTelBtn = document.getElementById('cta-tel-btn')
@@ -25,115 +31,178 @@ window.addEventListener('scroll', () => {
       ctaTel.classList.remove('open');
     }
   });
+ /* HERO CALL BUTTON */
  
- 
+const callBtn = document.querySelector('.hero-call-btn');
+const callSlideInfo = document.querySelector('.hero-call-btn-number-slide');
+
+// Open when hovering button
+callBtn.addEventListener('mouseenter', () => {
+  callSlideInfo.classList.add('open');
+});
+
+// Keep open when hovering slide
+callSlideInfo.addEventListener('mouseenter', () => {
+  callSlideInfo.classList.add('open');
+});
+
+// Close when leaving BOTH elements
+function closeIfOutside(e) {
+  // If the mouse is not over either element, close
+  if (!callBtn.contains(e.relatedTarget) && 
+      !callSlideInfo.contains(e.relatedTarget)) {
+    callSlideInfo.classList.remove('open');
+  }
+}
+callBtn.addEventListener('mouseleave', closeIfOutside);
+callSlideInfo.addEventListener('mouseleave', closeIfOutside);
+
+  
   
 
- 
- /* HEADER STICKY */
-const header = document.querySelector('.primary-nav-header');
-let scrollTimeout;
-let lastScrollY = window.scrollY;
-let isHovering = false;
-let suppressScrollShow = false;
 
-// Track hover state (prevents hiding)
+
+  
+/* HEADER STICKY */
+document.addEventListener('DOMContentLoaded', () => {
+const header = document.querySelector('.primary-nav-header');
+const navBtn = document.querySelector('.nav-btn');
+const navCloseBtn = document.querySelector('.nav-close-btn');
+const navFlexContainer = document.querySelector('.nav-flex-container');
+const navLinkPressClose = document.querySelectorAll('#primary-nav-links li a');
+const pageOverlay = document.querySelector('.page-overlay');
+
+if (!header) return;
+
+let lastScrollY = window.scrollY;
+let hideTimer = null;
+let isHovering = false;
+let isHeaderVisible = true;
+let isMenuOpen = false;
+
+// --------------------
+// Header visibility
+// --------------------
+
+function showHeader() {
+if (!isHeaderVisible) {
+header.classList.remove('header-hidden');
+isHeaderVisible = true;
+}
+}
+
+function hideHeader() {
+if (isHeaderVisible && !isMenuOpen) {
+header.classList.add('header-hidden');
+isHeaderVisible = false;
+}
+}
+
+function startHideTimer() {
+clearTimeout(hideTimer);
+
+if (isMenuOpen) return;
+
+hideTimer = setTimeout(() => {
+  if (!isHovering && !isMenuOpen && window.scrollY > 0) {
+    hideHeader();
+  }
+}, 800);
+
+}
+
+// --------------------
+// Hover behavior
+// --------------------
+
 header.addEventListener('mouseenter', () => {
-  isHovering = true;
-  clearTimeout(scrollTimeout);
+isHovering = true;
+showHeader();
+clearTimeout(hideTimer);
 });
 
 header.addEventListener('mouseleave', () => {
-  isHovering = false;
+isHovering = false;
+startHideTimer();
 });
 
-// Scroll logic
+// --------------------
+// Scroll behavior
+// --------------------
+
 window.addEventListener('scroll', () => {
-  if (suppressScrollShow) return;  // ← prevents header from re-showing
+const currentY = window.scrollY;
 
-  const currentY = window.scrollY;
+// Always visible at top
+if (currentY === 0) {
+  clearTimeout(hideTimer);
+  showHeader();
+  lastScrollY = 0;
+  return;
+}
 
-  // If scrolling UP → show header
-  if (currentY < lastScrollY) {
-    header.classList.add('scrolled');
-  }
+const scrollingDown = currentY > lastScrollY;
+const scrollingUp = currentY < lastScrollY;
 
-  // If scrolling DOWN → show but allow hide-on-stop
-  if (currentY > lastScrollY) {
-    header.classList.add('scrolled');
-  }
+if (scrollingDown) {
+  showHeader();
+  startHideTimer();
+}
 
-  if (window.scrollY === 0) {
-    header.classList.remove('scrolled');
-  }
+if (scrollingUp && !isHovering && !isMenuOpen) {
+  hideHeader();
+}
 
-  lastScrollY = currentY;
+lastScrollY = currentY;
 
-  clearTimeout(scrollTimeout);
-
-  // Hide after 3s if user stops scrolling AND not hovering
-  scrollTimeout = setTimeout(() => {
-    if (!isHovering && currentY > 0) {
-      header.classList.remove('scrolled');
-    }
-  }, 3000);
 });
 
+// --------------------
+// Navigation menu
+// --------------------
 
-// Instantly hide header on nav-link click
-document.querySelectorAll('.nav-link').forEach(navLink => {
-  navLink.addEventListener('click', () => {
-    suppressScrollShow = true;            // block scroll logic
-    clearTimeout(scrollTimeout);
+function updateHeaderShadow() {
+header.classList.toggle(
+'nav-open',
+navFlexContainer.classList.contains('open')
+);
+}
 
-    header.classList.remove('scrolled');  // instantly hide
+function openMenu() {
+navFlexContainer.classList.add('open');
+isMenuOpen = true;
+clearTimeout(hideTimer);
+showHeader();
+updateHeaderShadow();
+}
 
-    // Release lock after enough time for scroll jump to finish
-    setTimeout(() => {
-      suppressScrollShow = false;
-    }, 1500); // you can adjust this if needed
-  });
+function closeMenu() {
+navFlexContainer.classList.remove('open');
+isMenuOpen = false;
+showHeader();
+updateHeaderShadow();
+startHideTimer();
+}
+
+navBtn?.addEventListener('click', (e) => {
+e.stopPropagation();
+isMenuOpen ? closeMenu() : openMenu();
 });
 
+navCloseBtn?.addEventListener('click', closeMenu);
+pageOverlay?.addEventListener('click', closeMenu);
 
-/* disappears when user stops scrolling and starts when they start scrolling again */
-
-
- /* HERO */
-const navBtn = document.getElementById('nav-btn');
-const navcloseBtn = document.getElementById('nav-close-btn');
-const navFlexContainer = document.getElementById('nav-flex-container');
-const navLinkPressClose = document.querySelectorAll('.primary-nav-links li a');
-
-
-// Toggle menu when clicking the button
-navBtn.addEventListener('click', (e) => {
-  e.stopPropagation(); // prevent click from reaching document
-  navFlexContainer.classList.toggle('open');
-});
- navcloseBtn.addEventListener('click', () =>{
-    navFlexContainer.classList.remove('open');
-  });
-// Close menu when clicking outside
-document.addEventListener('click', (e) => {
-  const clickedOutside =
-    !navFlexContainer.contains(e.target) &&
-    !navBtn.contains(e.target) && !navLinkPressClose.contains(e.target);
-
-
-  if (clickedOutside) {
-    navFlexContainer.classList.remove('open');
-  }
-});
- 
 navLinkPressClose.forEach(link => {
-  link.addEventListener('click', () => {
-    navFlexContainer.classList.remove('open');
-    
-  })
-})
+link.addEventListener('click', closeMenu);
+});
 
+// --------------------
+// Initial state
+// --------------------
 
+showHeader();
+startHideTimer();
+});
 /*const servicesTrack = document.querySelector('.services-flex-container');
 const servicesSlide = document.querySelectorAll('.servicesSlide');
 const prevServiceBtn = document.querySelector('.prevServiceBtn');
@@ -269,6 +338,17 @@ createDots();
 
 
   
+/* FAQ HOVER OPEN */
+const faqQuestion = document.querySelectorAll('.faq-question');
+
+faqQuestion.forEach(question => {
+  question.addEventListener('mouseenter', () => {
+    const container = question.closest('.faq-answer-container');
+    container.open = true;
+  });
+});
+
+
 
 
 /* REMOVE BTN HOVER EFFECT MOBILE */
