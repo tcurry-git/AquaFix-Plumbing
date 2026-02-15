@@ -464,7 +464,6 @@ animation: cta-tel-shake 2.2s ease-in-out 2s infinite;
 }
 .nav-flex-container{
     background-color: white ;
-    height: 100svh;
     min-height: 100svh;
     width: 600px;
     max-width: 100%;

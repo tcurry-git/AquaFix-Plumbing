@@ -196,6 +196,9 @@ navLinkPressClose.forEach(link => {
 link.addEventListener('click', closeMenu);
 });
 
+window.addEventListener('scroll', () =>{
+  navFlexContainer.classList.remove('open');
+})
 // --------------------
 // Initial state
 // --------------------
