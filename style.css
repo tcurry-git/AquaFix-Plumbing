@@ -476,7 +476,7 @@ animation: cta-tel-shake 2.2s ease-in-out 2s infinite;
     justify-content: space-between;
     align-items: flex-start;
     gap: var(--large-flex-box-gap);
-    padding: clamp(24svh, 4vw, 10svh) var(--large-box-padding) var(--large-box-padding) var(--large-box-padding);
+    padding: 24svh var(--large-box-padding) var(--large-box-padding) var(--large-box-padding);
     position: fixed;
     transform: translateX(100%);
     transition: transform 0.25s ease;
@@ -496,6 +496,7 @@ animation: cta-tel-shake 2.2s ease-in-out 2s infinite;
     height: 100dvh;        /* dynamic viewport height */
     min-height: 100dvh;    /* prevent shrinking */
     overflow-y: auto;
+
   }
     }
 
