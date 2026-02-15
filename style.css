@@ -489,6 +489,11 @@ animation: cta-tel-shake 2.2s ease-in-out 2s infinite;
         width: 100%;
     }
 }
+@media (max-width: 600px){
+    .nav-flex-container{
+        height: 100svh;
+    }
+}
 .nav-flex-container.open ~ .page-overlay{
     display: block;
     pointer-events: auto;
