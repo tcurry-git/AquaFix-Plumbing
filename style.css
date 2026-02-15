@@ -495,7 +495,6 @@ animation: cta-tel-shake 2.2s ease-in-out 2s infinite;
     width: 100vw;
     height: 100dvh;        /* dynamic viewport height */
     min-height: 100dvh;    /* prevent shrinking */
-    padding: 6rem var(--large-box-padding);
     overflow-y: auto;
   }
     }
