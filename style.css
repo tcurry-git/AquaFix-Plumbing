@@ -464,7 +464,7 @@ animation: cta-tel-shake 2.2s ease-in-out 2s infinite;
 }
 .nav-flex-container{
     background-color: white ;
-    height: 100svh;
+    min-height: 100svh;
     width: 600px;
     max-width: 100%;
     top: 0;
@@ -491,9 +491,15 @@ animation: cta-tel-shake 2.2s ease-in-out 2s infinite;
 }
 @media (max-width: 600px){
     .nav-flex-container{
-        height: 100%;
+            /* replaces top/right/bottom/left */
+    width: 100vw;
+    height: 100dvh;        /* dynamic viewport height */
+    min-height: 100dvh;    /* prevent shrinking */
+    padding: 6rem var(--large-box-padding);
+    overflow-y: auto;
+  }
     }
-}
+
 .nav-flex-container.open ~ .page-overlay{
     display: block;
     pointer-events: auto;
