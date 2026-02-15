@@ -107,7 +107,7 @@ hideTimer = setTimeout(() => {
   if (!isHovering && !isMenuOpen && window.scrollY > 0) {
     hideHeader();
   }
-}, 800);
+}, 1000);
 
 }
 
